@@ -135,9 +135,9 @@ if [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMountainLionCompatibilit
 			echo "- ${plistLoc}.plist"
 
 			# On enregistre les valeurs
-			# MoutainLion
-			[[ ${checkMountainLionCompatibility} -eq 1 ]] && sudo /usr/bin/defaults write "${plistLoc}" osx_moutainlion_compatibility -int 1
-			[[ ${checkMountainLionCompatibility} -ne 1 ]] && sudo /usr/bin/defaults write "${plistLoc}" osx_moutainlion_compatibility -int 0
+			# MountainLion
+			[[ ${checkMountainLionCompatibility} -eq 1 ]] && sudo /usr/bin/defaults write "${plistLoc}" osx_mountainlion_compatibility -int 1
+			[[ ${checkMountainLionCompatibility} -ne 1 ]] && sudo /usr/bin/defaults write "${plistLoc}" osx_mountainlion_compatibility -int 0
 			# Mavericks
 			[[ ${checkMavericksCompatibility} -eq 1 ]] && sudo /usr/bin/defaults write "${plistLoc}" osx_mavericks_compatibility -int 1
 			[[ ${checkMavericksCompatibility} -ne 1 ]] && sudo /usr/bin/defaults write "${plistLoc}" osx_mavericks_compatibility -int 0
