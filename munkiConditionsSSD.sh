@@ -15,7 +15,7 @@
 # <string>hw_ssd_apple == 1</string>
 
 # Variables initialisation
-version="munkiConditionsSSD v0.1 - 2016, Yvan Godard [godardyvan@gmail.com]"
+version="munkiConditionsSSD v0.2 - 2016, Yvan Godard [godardyvan@gmail.com]"
 versionOSX=$(sw_vers -productVersion)
 scriptDir=$(dirname "${0}")
 scriptName=$(basename "${0}")
