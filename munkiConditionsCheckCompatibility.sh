@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Variables initialisation
-version="munkiConditionsCheckCompatibility v0.1 - 2016, Yvan Godard [godardyvan@gmail.com]"
+version="munkiConditionsCheckCompatibility v0.2 - 2016, Yvan Godard [godardyvan@gmail.com]"
 versionOSX=$(sw_vers -productVersion | awk -F '.' '{print $(NF-1)}')
 scriptDir=$(dirname "${0}")
 scriptName=$(basename "${0}")
@@ -10,19 +10,22 @@ scriptsDirCompatibilityCheck="/usr/local/scriptsDirCompatibilityCheck"
 # Fichier temporaire contenant la liste des plist réels ManagedInstall.plist
 listPlistsFiles=$(mktemp /tmp/scriptNameWithoutExt_plistList.XXXXX)
 # Sous-script
-scriptCheckMountainLionCompatibilityGit="https://raw.githubusercontent.com/hjuutilainen/adminscripts/master/check-mountainlion-compatibility.py"
-scriptCheckMountainLionCompatibility="check-mountainlion-compatibility.py"
-scriptCheckMavericksCompatibilityGit="https://raw.githubusercontent.com/hjuutilainen/adminscripts/master/check-mavericks-compatibility.py"
-scriptCheckMavericksCompatibility="check-mavericks-compatibility.py"
-scriptCheckYosemiteCompatibilityGit="https://raw.githubusercontent.com/hjuutilainen/adminscripts/master/check-yosemite-compatibility.py"
-scriptCheckYosemiteCompatibility="check-yosemite-compatibility.py"
-scriptCheckElCapitanCompatibilityGit="https://raw.githubusercontent.com/hjuutilainen/adminscripts/master/check-elcapitan-compatibility.py"
-scriptCheckElCapitanCompatibility="check-elcapitan-compatibility.py"
+scriptCheckMacOS10_8CompatibilityGit="https://raw.githubusercontent.com/hjuutilainen/adminscripts/master/check-10.8-mountainlion-compatibility.py"
+scriptCheckMacOS10_8Compatibility="check-10.8-mountainlion-compatibility.py"
+scriptCheckMacOS10_9CompatibilityGit="https://raw.githubusercontent.com/hjuutilainen/adminscripts/master/check-10.9-mavericks-compatibility.py"
+scriptCheckMacOS10_9Compatibility="check-10.9-mavericks-compatibility.py"
+scriptCheckMacOS10_10CompatibilityGit="https://raw.githubusercontent.com/hjuutilainen/adminscripts/master/check-10.10-yosemite-compatibility.py"
+scriptCheckMacOS10_10Compatibility="check-10.10-yosemite-compatibility.py"
+scriptCheckMacOS10_11CompatibilityGit="https://raw.githubusercontent.com/hjuutilainen/adminscripts/master/check-10.11-elcapitan-compatibility.py"
+scriptCheckMacOS10_11Compatibility="check-10.11-elcapitan-compatibility.py"
+scriptCheckMacOS10_12CompatibilityGit="https://raw.githubusercontent.com/hjuutilainen/adminscripts/master/check-10.12-sierra-compatibility.py"
+scriptCheckMacOS10_12Compatibility="check-10.12-sierra-compatibility.py"
 # Default values
 checkMountainLionCompatibility=0
 checkMavericksCompatibility=0
 checkYosemiteCompatibility=0
 checkElCapitanCompatibility=0
+checkSierraCompatibility=0
 
 # Exécutable seulement par root
 if [ `whoami` != 'root' ]
@@ -49,24 +52,34 @@ if [[ ! -e ${scriptsDirCompatibilityCheck} ]]; then
 	[[ $? -ne 0 ]] && echo "Impossible de créer le dossier ${scriptsDirCompatibilityCheck}. Nous quittons." && exit 1
 fi
 
+# Suppression des anciennes versions de check scripts
+[[ -e ${scriptsDirCompatibilityCheck%/}/check-mountainlion-compatibility.py ]] && rm ${scriptsDirCompatibilityCheck%/}/check-mountainlion-compatibility.py
+[[ -e ${scriptsDirCompatibilityCheck%/}/check-mavericks-compatibility.py ]] && rm ${scriptsDirCompatibilityCheck%/}/check-mavericks-compatibility.py
+[[ -e ${scriptsDirCompatibilityCheck%/}/check-yosemite-compatibility.py ]] && rm ${scriptsDirCompatibilityCheck%/}/check-yosemite-compatibility.py
+[[ -e ${scriptsDirCompatibilityCheck%/}/check-elcapitan-compatibility.py ]] && rm ${scriptsDirCompatibilityCheck%/}/check-elcapitan-compatibility.py
+
 # On installe les sous-scripts s'ils ne le sont pas 
 echo "Téléchargement des scripts de tests :"
-echo "- ${scriptCheckMountainLionCompatibility}"
-[[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMountainLionCompatibility} ]] && rm ${scriptsDirCompatibilityCheck%/}/${scriptCheckMountainLionCompatibility}
-curl --insecure ${scriptCheckMountainLionCompatibilityGit} -o ${scriptsDirCompatibilityCheck%/}/${scriptCheckMountainLionCompatibility}
-chmod +x ${scriptsDirCompatibilityCheck%/}/${scriptCheckMountainLionCompatibility}
-echo "- ${scriptCheckMavericksCompatibility}"
-[[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMavericksCompatibility} ]] && rm ${scriptsDirCompatibilityCheck%/}/${scriptCheckMavericksCompatibility}
-curl --insecure ${scriptCheckMavericksCompatibilityGit} -o ${scriptsDirCompatibilityCheck%/}/${scriptCheckMavericksCompatibility}
-chmod +x ${scriptsDirCompatibilityCheck%/}/${scriptCheckMavericksCompatibility}
-echo "- ${scriptCheckYosemiteCompatibility}"
-[[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckYosemiteCompatibility} ]] && rm ${scriptsDirCompatibilityCheck%/}/${scriptCheckYosemiteCompatibility}
-curl --insecure ${scriptCheckYosemiteCompatibilityGit} -o ${scriptsDirCompatibilityCheck%/}/${scriptCheckYosemiteCompatibility}
-chmod +x ${scriptsDirCompatibilityCheck%/}/${scriptCheckYosemiteCompatibility}
-echo "- ${scriptCheckElCapitanCompatibility}"
-[[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckElCapitanCompatibility} ]] && rm ${scriptsDirCompatibilityCheck%/}/${scriptCheckElCapitanCompatibility}
-curl --insecure ${scriptCheckElCapitanCompatibilityGit} -o ${scriptsDirCompatibilityCheck%/}/${scriptCheckElCapitanCompatibility}
-chmod +x ${scriptsDirCompatibilityCheck%/}/${scriptCheckElCapitanCompatibility}
+echo "- ${scriptCheckMacOS10_8Compatibility}"
+[[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_8Compatibility} ]] && rm ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_8Compatibility}
+curl --insecure ${scriptCheckMacOS10_8CompatibilityGit} -o ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_8Compatibility}
+chmod +x ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_8Compatibility}
+echo "- ${scriptCheckMacOS10_9Compatibility}"
+[[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_9Compatibility} ]] && rm ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_9Compatibility}
+curl --insecure ${scriptCheckMacOS10_9CompatibilityGit} -o ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_9Compatibility}
+chmod +x ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_9Compatibility}
+echo "- ${scriptCheckMacOS10_10Compatibility}"
+[[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_10Compatibility} ]] && rm ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_10Compatibility}
+curl --insecure ${scriptCheckMacOS10_10CompatibilityGit} -o ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_10Compatibility}
+chmod +x ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_10Compatibility}
+echo "- ${scriptCheckMacOS10_11Compatibility}"
+[[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_11Compatibility} ]] && rm ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_11Compatibility}
+curl --insecure ${scriptCheckMacOS10_11CompatibilityGit} -o ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_11Compatibility}
+chmod +x ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_11Compatibility}
+echo "- ${scriptCheckMacOS10_12Compatibility}"
+[[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_12Compatibility} ]] && rm ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_12Compatibility}
+curl --insecure ${scriptCheckMacOS10_12CompatibilityGit} -o ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_12Compatibility}
+chmod +x ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_12Compatibility}
 echo ""
 
 # liste des fichiers plist potentiels ManagedInstall.plist, séparés par % (MCX | /private/var/root/Library/Preferences/ManagedInstalls.plist | /Library/Preferences/ManagedInstalls.plist)
@@ -77,36 +90,42 @@ OLDIFS=$IFS
 IFS=$'\n'
 
 # Lancement des sous-scripts
-if [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMountainLionCompatibility} ]] || [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMavericksCompatibility} ]] || [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckYosemiteCompatibility} ]] || [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckElCapitanCompatibility} ]]; then
+if [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_8Compatibility} ]] || [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_9Compatibility} ]] || [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_10Compatibility} ]] || [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_11Compatibility} ]]; then
 	echo "Compatibilité OS :"
-	if [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMountainLionCompatibility} ]]; then
-		${scriptsDirCompatibilityCheck%/}/${scriptCheckMountainLionCompatibility} > /dev/null 2>&1
+	if [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_8Compatibility} ]]; then
+		${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_8Compatibility} > /dev/null 2>&1
 		[[ $? -eq 0 ]] && checkMountainLionCompatibility=1
 		echo "- check-mountainlion-compatibility : ${checkMountainLionCompatibility}"
-		for line in $(${scriptsDirCompatibilityCheck%/}/${scriptCheckMountainLionCompatibility} | tr -s ' '); do echo "		${line}"; done
+		for line in $(${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_8Compatibility} | tr -s ' '); do echo "		${line}"; done
 	fi
-	if [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMavericksCompatibility} ]]; then
-		${scriptsDirCompatibilityCheck%/}/${scriptCheckMavericksCompatibility} > /dev/null 2>&1
+	if [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_9Compatibility} ]]; then
+		${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_9Compatibility} > /dev/null 2>&1
 		[[ $? -eq 0 ]] && checkMavericksCompatibility=1
 		echo "- check-mavericks-compatibility : ${checkMavericksCompatibility}"
-		for line in $(${scriptsDirCompatibilityCheck%/}/${scriptCheckMavericksCompatibility} | tr -s ' '); do echo "		${line}"; done
+		for line in $(${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_9Compatibility} | tr -s ' '); do echo "		${line}"; done
 	fi
-	if [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckYosemiteCompatibility} ]]; then
-		${scriptsDirCompatibilityCheck%/}/${scriptCheckYosemiteCompatibility} > /dev/null 2>&1
+	if [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_10Compatibility} ]]; then
+		${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_10Compatibility} > /dev/null 2>&1
 		[[ $? -eq 0 ]] && checkYosemiteCompatibility=1
 		echo "- check-yosemite-compatibility : ${checkYosemiteCompatibility}"
-		for line in $(${scriptsDirCompatibilityCheck%/}/${scriptCheckYosemiteCompatibility} | tr -s ' '); do echo "		${line}"; done
+		for line in $(${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_10Compatibility} | tr -s ' '); do echo "		${line}"; done
 	fi
-	if [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckElCapitanCompatibility} ]]; then
-		${scriptsDirCompatibilityCheck%/}/${scriptCheckElCapitanCompatibility} > /dev/null 2>&1
+	if [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_11Compatibility} ]]; then
+		${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_11Compatibility} > /dev/null 2>&1
 		[[ $? -eq 0 ]] && checkElCapitanCompatibility=1
 		echo "- check-elcapitan-compatibility : ${checkElCapitanCompatibility}"
-		for line in $(${scriptsDirCompatibilityCheck%/}/${scriptCheckElCapitanCompatibility} | tr -s ' '); do echo "		${line}"; done
+		for line in $(${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_11Compatibility} | tr -s ' '); do echo "		${line}"; done
+	fi
+	if [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_12Compatibility} ]]; then
+		${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_12Compatibility} > /dev/null 2>&1
+		[[ $? -eq 0 ]] && checkSierraCompatibility=1
+		echo "- check-sierra-compatibility : ${checkSierraCompatibility}"
+		for line in $(${scriptsDirCompatibilityCheck%/}/${scriptCheckMacOS10_12Compatibility} | tr -s ' '); do echo "		${line}"; done
 	fi
 
 	for plistFile in $(echo ${potentialPlistsList} | perl -p -e 's/%/\n/g' | awk '!x[$0]++')
 	do
-		/usr/bin/defaults read ${plistFile} ManagedInstallDir > /dev/null 2>&1
+		/usr/bin/defaults read "${plistFile}" ManagedInstallDir > /dev/null 2>&1
 		[[ $? -eq 0 ]] && managedInstallDir=$(/usr/bin/defaults read ${plistFile} ManagedInstallDir) && echo "${managedInstallDir}" >> ${listPlistsFiles}
 	done
 
@@ -147,7 +166,9 @@ if [[ -e ${scriptsDirCompatibilityCheck%/}/${scriptCheckMountainLionCompatibilit
 			# El Capitan
 			[[ ${checkElCapitanCompatibility} -eq 1 ]] && sudo /usr/bin/defaults write "${plistLoc}" osx_elcapitan_compatibility -int 1
 			[[ ${checkElCapitanCompatibility} -ne 1 ]] && sudo /usr/bin/defaults write "${plistLoc}" osx_elcapitan_compatibility -int 0
-
+			# Sierra
+			[[ ${checkSierraCompatibility} -eq 1 ]] && sudo /usr/bin/defaults write "${plistLoc}" osx_sierra_compatibility -int 1
+			[[ ${checkSierraCompatibility} -ne 1 ]] && sudo /usr/bin/defaults write "${plistLoc}" osx_sierra_compatibility -int 0
 			# Since 'defaults' outputs a binary plist, we should convert it back to XML
 			/usr/bin/plutil -convert xml1 "${plistLoc}.plist"
 			chmod 755 "${plistLoc}.plist"
